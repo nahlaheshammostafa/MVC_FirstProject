@@ -12,7 +12,8 @@ namespace MVC_FirstProject.PL.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            var departments = _departmentRepo.GetAll();
+            return View(departments);
         }
     }
 }
