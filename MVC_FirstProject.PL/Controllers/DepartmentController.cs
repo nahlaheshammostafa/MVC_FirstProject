@@ -91,6 +91,34 @@ namespace MVC_FirstProject.PL.Controllers
             }
         }
 
+        //   /Department/Details/100
+        //   /Department/Details
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            return Details(id, "Delete");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Department department)
+        {
+            try
+            {
+                _departmentRepo.Delete(department);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(Exception ex)
+            {
+                // 1. Log Exception
+                // 2. Friendly Message
+                if (_env.IsDevelopment())
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                else
+                    ModelState.AddModelError(string.Empty, "Error Ocuured during Deleting Department");
+                return View(department);
+            }
+        }
+
 
     }
 }
