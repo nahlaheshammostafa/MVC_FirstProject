@@ -23,10 +23,8 @@ namespace MVC_FirstProject.DAL.Models
         [EnumMember(Value = "PartTime")]
         PartTime = 2
     }
-    public class Employee
+    public class Employee : ModelBase
     {
-        public int Id { get; set; }
-
         [Required(ErrorMessage ="Name Is Required!")]
         [MaxLength(50, ErrorMessage ="Max Length of Name is 50 chars")]
         [MinLength(5, ErrorMessage = "Min Length of Name is 5 chars")]

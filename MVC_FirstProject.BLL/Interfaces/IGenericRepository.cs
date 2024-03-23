@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace MVC_FirstProject.BLL.Interfaces
 {
-    public interface IEmployeeRepository : IGenericRepository<Employee>
+    public interface IGenericRepository<T> where T : ModelBase
     {
-        IQueryable<Employee> GetEmployeesByAddress(string address);
+        IEnumerable<T> GetAll();
+        T Get(int id);
+        int Add(T entity);
+        int Update(T entity);
+        int Delete(T entity);
     }
 }
