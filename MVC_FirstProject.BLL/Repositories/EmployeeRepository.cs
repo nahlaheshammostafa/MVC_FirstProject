@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MVC_FirstProject.BLL.Repositories
 {
-    internal class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
+    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
         public EmployeeRepository(ApplicationDbContext dbContext)  // Ask CLR to create object from DbContext
          : base(dbContext)
