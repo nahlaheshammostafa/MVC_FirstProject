@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using MVC_FirstProject.BLL.Interfaces;
 using MVC_FirstProject.DAL.Models;
 using System;
+using System.Linq;
 
 namespace MVC_FirstProject.PL.Controllers
 {
@@ -20,7 +21,7 @@ namespace MVC_FirstProject.PL.Controllers
             _env = env;
          //   _departmenteRepo = departmentRepo;
         }
-        public IActionResult Index()
+        public IActionResult Index(string SearchInp)
         {
             TempData.Keep();
             // 1. ViewData
@@ -30,7 +31,12 @@ namespace MVC_FirstProject.PL.Controllers
             //overrite for Message
             ViewBag.Message = "Hello ViewBag";
 
-            var employees = _employeeRepo.GetAll();
+            var employees =Enumerable.Empty<Employee>();
+            if(string.IsNullOrEmpty(SearchInp))
+                employees = _employeeRepo.GetAll();
+            else
+                employees = _employeeRepo.SearchByName(SearchInp.ToLower());
+
             return View(employees);
         }
 
