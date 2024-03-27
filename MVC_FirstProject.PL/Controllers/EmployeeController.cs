@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using MVC_FirstProject.BLL.Interfaces;
 using MVC_FirstProject.DAL.Models;
+using MVC_FirstProject.PL.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MVC_FirstProject.PL.Controllers
@@ -11,13 +14,15 @@ namespace MVC_FirstProject.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepo;
-       // private readonly IDepartmentRepository _departmenteRepo;
+        private readonly IMapper _mapper;
+        // private readonly IDepartmentRepository _departmenteRepo;
 
         private readonly IWebHostEnvironment _env;
 
-        public EmployeeController(IEmployeeRepository employeeRepo, IWebHostEnvironment env /*IDepartmentRepository departmentRepo*/)
+        public EmployeeController(IMapper mapper, IEmployeeRepository employeeRepo, IWebHostEnvironment env /*IDepartmentRepository departmentRepo*/)
         {
             _employeeRepo = employeeRepo;
+            _mapper = mapper;
             _env = env;
          //   _departmenteRepo = departmentRepo;
         }
@@ -37,39 +42,43 @@ namespace MVC_FirstProject.PL.Controllers
             else
                 employees = _employeeRepo.SearchByName(SearchInp.ToLower());
 
-            return View(employees);
+            var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
+            return View(mappedEmps);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-         //   ViewData["Departments"] = _departmenteRepo.GetAll();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Employee employee)
+        public IActionResult Create(EmployeeViewModel employeeVM)
         {
             if (ModelState.IsValid)
             {
-                var count = _employeeRepo.Add(employee);
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+                var count = _employeeRepo.Add(mappedEmp);
                 if (count > 0)
                     TempData["Message"] = "Created Successfully";
                 else
                     TempData["Message"] = "Error And Not Created";
                 return RedirectToAction(nameof(Index));
             }
-            return View(employee);
+            return View(employeeVM);
         }
+
         [HttpGet]
         public IActionResult Details(int? id, string viewName = "Details")
         {
             if(!id.HasValue)
                 return BadRequest();
             var employee = _employeeRepo.Get(id.Value);
-            if(employee is null)
+            var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
+
+            if (employee is null)
                 return NotFound();
-            return View(viewName, employee);
+            return View(viewName, mappedEmp);
         }
 
         [HttpGet]
@@ -81,16 +90,16 @@ namespace MVC_FirstProject.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, Employee employee)
+        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
         {
-            if(id != employee.Id)
+            if(id != employeeVM.Id)
                 return BadRequest();
             if(!ModelState.IsValid)
-                return View(employee);
-
+                return View(employeeVM);
             try
             {
-                _employeeRepo.Update(employee);
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+                _employeeRepo.Update(mappedEmp);
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
@@ -99,23 +108,23 @@ namespace MVC_FirstProject.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
                     ModelState.AddModelError(string.Empty, "Error Ocured During Updating Department");
-                return View(employee);
+                return View(employeeVM);
             }
         }
 
         [HttpGet]
         public IActionResult Delete(int? id)
-
         {
             return Details(id, "Delete");
         }
 
         [HttpPost]
-        public IActionResult Delete(Employee employee)
+        public IActionResult Delete(EmployeeViewModel employeeVM)
         { 
             try
             {
-                _employeeRepo.Delete(employee);
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+                _employeeRepo.Delete(mappedEmp);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -124,7 +133,7 @@ namespace MVC_FirstProject.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
                     ModelState.AddModelError(string.Empty, "Error Ocured During Deleting Department");
-                return View(employee);
+                return View(employeeVM);
             }
         }
     }
