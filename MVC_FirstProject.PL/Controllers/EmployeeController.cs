@@ -10,15 +10,26 @@ namespace MVC_FirstProject.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepo;
+       // private readonly IDepartmentRepository _departmenteRepo;
+
         private readonly IWebHostEnvironment _env;
 
-        public EmployeeController(IEmployeeRepository employeeRepo, IWebHostEnvironment env)
+        public EmployeeController(IEmployeeRepository employeeRepo, IWebHostEnvironment env /*IDepartmentRepository departmentRepo*/)
         {
             _employeeRepo = employeeRepo;
             _env = env;
+         //   _departmenteRepo = departmentRepo;
         }
         public IActionResult Index()
         {
+            TempData.Keep();
+            // 1. ViewData
+            ViewData["Message"] = "Hello ViewData";
+
+            // 2. ViewBag
+            //overrite for Message
+            ViewBag.Message = "Hello ViewBag";
+
             var employees = _employeeRepo.GetAll();
             return View(employees);
         }
@@ -26,6 +37,7 @@ namespace MVC_FirstProject.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+         //   ViewData["Departments"] = _departmenteRepo.GetAll();
             return View();
         }
 
@@ -36,9 +48,10 @@ namespace MVC_FirstProject.PL.Controllers
             {
                 var count = _employeeRepo.Add(employee);
                 if (count > 0)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                    TempData["Message"] = "Created Successfully";
+                else
+                    TempData["Message"] = "Error And Not Created";
+                return RedirectToAction(nameof(Index));
             }
             return View(employee);
         }
@@ -56,6 +69,8 @@ namespace MVC_FirstProject.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int id) 
         {
+         //   ViewData["Departments"] = _departmenteRepo.GetAll();
+
             return Details(id, "Edit");
         }
 

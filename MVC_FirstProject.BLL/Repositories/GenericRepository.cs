@@ -37,8 +37,14 @@ namespace MVC_FirstProject.BLL.Repositories
         }
 
         public IEnumerable<T> GetAll()
-            => _dbContext.Set<T>().AsNoTracking().ToList();
+        {
+            if(typeof(T) == typeof(Employee))
+            {
+                return (IEnumerable<T>) _dbContext.Employees.Include(E => E.Department).AsNoTracking().ToList();
+            }
+            else return _dbContext.Set<T>().AsNoTracking().ToList();
 
+        }
         public int Update(T entity)
         {
             _dbContext.Update(entity);

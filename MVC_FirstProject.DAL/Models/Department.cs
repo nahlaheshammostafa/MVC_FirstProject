@@ -17,5 +17,8 @@ namespace MVC_FirstProject.DAL.Models
         public string Name { get; set; }
         public DateTime DateOfCreation { get; set; }
 
+        //Navigation
+        public ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
+
     }
 }
