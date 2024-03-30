@@ -13,15 +13,18 @@ namespace MVC_FirstProject.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _employeeRepo;
+       // private readonly IEmployeeRepository _employeeRepo;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+
         // private readonly IDepartmentRepository _departmenteRepo;
 
         private readonly IWebHostEnvironment _env;
 
-        public EmployeeController(IMapper mapper, IEmployeeRepository employeeRepo, IWebHostEnvironment env /*IDepartmentRepository departmentRepo*/)
+        public EmployeeController(IUnitOfWork unitOfWork,IMapper mapper, /*IEmployeeRepository employeeRepo,*/ IWebHostEnvironment env /*IDepartmentRepository departmentRepo*/)
         {
-            _employeeRepo = employeeRepo;
+          //  _employeeRepo = employeeRepo;
+          _unitOfWork = unitOfWork;
             _mapper = mapper;
             _env = env;
          //   _departmenteRepo = departmentRepo;
@@ -38,9 +41,9 @@ namespace MVC_FirstProject.PL.Controllers
 
             var employees =Enumerable.Empty<Employee>();
             if(string.IsNullOrEmpty(SearchInp))
-                employees = _employeeRepo.GetAll();
+                employees = _unitOfWork.EmployeeRepository.GetAll();
             else
-                employees = _employeeRepo.SearchByName(SearchInp.ToLower());
+                employees = _unitOfWork.EmployeeRepository.SearchByName(SearchInp.ToLower());
 
             var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
             return View(mappedEmps);
@@ -58,7 +61,16 @@ namespace MVC_FirstProject.PL.Controllers
             if (ModelState.IsValid)
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                var count = _employeeRepo.Add(mappedEmp);
+                _unitOfWork.EmployeeRepository.Add(mappedEmp);
+
+                //1. Update Department
+                //_unitOfWork.EmployeeRepository.Update(Department)
+
+                //2. Delete Project
+                //_unitOfWork.EmployeeRepository.Remove(Project)
+
+                var count = _unitOfWork.Complete();
+
                 if (count > 0)
                     TempData["Message"] = "Created Successfully";
                 else
@@ -73,7 +85,7 @@ namespace MVC_FirstProject.PL.Controllers
         {
             if(!id.HasValue)
                 return BadRequest();
-            var employee = _employeeRepo.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
             var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
 
             if (employee is null)
@@ -99,7 +111,8 @@ namespace MVC_FirstProject.PL.Controllers
             try
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _employeeRepo.Update(mappedEmp);
+                _unitOfWork.EmployeeRepository.Update(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
@@ -124,7 +137,8 @@ namespace MVC_FirstProject.PL.Controllers
             try
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _employeeRepo.Delete(mappedEmp);
+                _unitOfWork.EmployeeRepository.Delete(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
