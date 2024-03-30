@@ -1,20 +1,21 @@
-﻿@model DepartmentViewModel
+﻿@model EmployeeViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Employee";
 }
 
-<h1>Create New Department</h1>
+<h1>Create New Employee</h1>
 
 <br />
 <br />
 
 <form asp-action="Create">
-
     <partial name="PartialViews/CreateEditEmployeePartial" />
+
     <input type="submit" value="Create" class="btn btn-primary" />|
     <a asp-action="Index" class="btn btn-light">Back To List</a>
 
 </form>
+
 @section ValidationScriptSection
 {
     <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>

@@ -1,0 +1,11 @@
+﻿@model DepartmentViewModel
+@{
+    ViewData["Title"] = "Delete Department";
+}
+
+<h1>Are You Sure To Delete This Department</h1>
+
+<form asp-action="Delete">
+    <partial name="PartialViews/DetailsDeleteEmployeePartial" />
+
+</form>

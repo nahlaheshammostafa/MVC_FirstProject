@@ -22,6 +22,12 @@ namespace MVC_FirstProject.DAL.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
+        public object AsNoTracking()
+        {
+            throw new NotImplementedException();
+        }
+
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

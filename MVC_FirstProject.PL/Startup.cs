@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using MVC_FirstProject.BLL.Interfaces;
 using MVC_FirstProject.BLL.Repositories;
 using MVC_FirstProject.DAL.Data;
+using MVC_FirstProject.PL.Extensions;
+using MVC_FirstProject.PL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +40,10 @@ namespace MVC_FirstProject.PL
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddApplicationServices(); // Extension Method
+
+            services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

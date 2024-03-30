@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace MVC_FirstProject.BLL.Interfaces
 {
-    public interface IDepartmentRepository : IGenericRepository<Department>
+    public interface IUnitOfWork : IDisposable
     {
-
+        IGenericRepository<T> Repository<T>() where T: ModelBase;
+        int Complete();
     }
 }
