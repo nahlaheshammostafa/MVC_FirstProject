@@ -27,7 +27,7 @@ namespace MVC_FirstProject.PL.Controllers
         }
         public IActionResult Index()
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments = _unitOfWork.Repository<Department>().GetAll();
             var mappedDep = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
             return View(mappedDep);
         }
@@ -45,7 +45,7 @@ namespace MVC_FirstProject.PL.Controllers
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                _unitOfWork.DepartmentRepository.Add(mappedDep);
+                _unitOfWork.Repository<Department>().Add(mappedDep);
                 var count = _unitOfWork.Complete();
                 if(count > 0)
                 {
@@ -61,7 +61,7 @@ namespace MVC_FirstProject.PL.Controllers
         {
             if (!id.HasValue)
                 return BadRequest(); // 400
-            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
             var mappedDep = _mapper.Map<Department, DepartmentViewModel>(department);
             if (department is null)
                 return NotFound();  // 404
@@ -88,7 +88,7 @@ namespace MVC_FirstProject.PL.Controllers
             try
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
-                _unitOfWork.DepartmentRepository.Update(mappedDep);
+                _unitOfWork.Repository<Department>().Update(mappedDep);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
@@ -118,7 +118,7 @@ namespace MVC_FirstProject.PL.Controllers
             try
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
-                _unitOfWork.DepartmentRepository.Delete(mappedDep);
+                _unitOfWork.Repository<Department>().Delete(mappedDep);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }

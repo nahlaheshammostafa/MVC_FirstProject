@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using MVC_FirstProject.BLL.Interfaces;
+using MVC_FirstProject.BLL.Repositories;
 using MVC_FirstProject.DAL.Models;
 using MVC_FirstProject.PL.ViewModels;
 using System;
@@ -40,10 +41,11 @@ namespace MVC_FirstProject.PL.Controllers
             ViewBag.Message = "Hello ViewBag";
 
             var employees =Enumerable.Empty<Employee>();
-            if(string.IsNullOrEmpty(SearchInp))
-                employees = _unitOfWork.EmployeeRepository.GetAll();
+            var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
+            if (string.IsNullOrEmpty(SearchInp))
+                employees = employeeRepo.GetAll();
             else
-                employees = _unitOfWork.EmployeeRepository.SearchByName(SearchInp.ToLower());
+                employees = employeeRepo.SearchByName(SearchInp.ToLower());
 
             var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
             return View(mappedEmps);
@@ -61,13 +63,13 @@ namespace MVC_FirstProject.PL.Controllers
             if (ModelState.IsValid)
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _unitOfWork.EmployeeRepository.Add(mappedEmp);
+                _unitOfWork.Repository<Employee>().Add(mappedEmp);
 
                 //1. Update Department
-                //_unitOfWork.EmployeeRepository.Update(Department)
+                //_unitOfWork.Repository<Department>().Update(Department)
 
                 //2. Delete Project
-                //_unitOfWork.EmployeeRepository.Remove(Project)
+                //_unitOfWork.Repository<Project>().Remove(Project)
 
                 var count = _unitOfWork.Complete();
 
@@ -85,7 +87,7 @@ namespace MVC_FirstProject.PL.Controllers
         {
             if(!id.HasValue)
                 return BadRequest();
-            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
+            var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
             var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
 
             if (employee is null)
@@ -111,7 +113,7 @@ namespace MVC_FirstProject.PL.Controllers
             try
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _unitOfWork.EmployeeRepository.Update(mappedEmp);
+                _unitOfWork.Repository<Employee>().Update(mappedEmp);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
@@ -137,7 +139,7 @@ namespace MVC_FirstProject.PL.Controllers
             try
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _unitOfWork.EmployeeRepository.Delete(mappedEmp);
+                _unitOfWork.Repository<Employee>().Delete(mappedEmp);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
