@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Hosting;
 using MVC_FirstProject.BLL.Interfaces;
 using MVC_FirstProject.BLL.Repositories;
 using MVC_FirstProject.DAL.Models;
+using MVC_FirstProject.PL.Helpers;
 using MVC_FirstProject.PL.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -60,8 +62,10 @@ namespace MVC_FirstProject.PL.Controllers
         [HttpPost]
         public IActionResult Create(EmployeeViewModel employeeVM)
         {
+            var fileName = DocumentSettings.UploadFile(employeeVM.Image, "images");
             if (ModelState.IsValid)
             {
+                employeeVM.ImageName = fileName;
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Add(mappedEmp);
 
@@ -74,7 +78,9 @@ namespace MVC_FirstProject.PL.Controllers
                 var count = _unitOfWork.Complete();
 
                 if (count > 0)
+                {
                     TempData["Message"] = "Created Successfully";
+                }
                 else
                     TempData["Message"] = "Error And Not Created";
                 return RedirectToAction(nameof(Index));

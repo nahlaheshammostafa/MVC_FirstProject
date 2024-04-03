@@ -11,7 +11,7 @@ namespace MVC_FirstProject.PL.Helpers
         {
             //1. Get Located Folder Path
             //  string folderPath = $"C:\\Users\\Tarak\\OneDrive\\Documents\\Nahla_Visual\\C#\\MVC_FirstProject\\MVC_FirstProject.PL\\wwwroot\\files\\{folderName}";
-            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "\\wwwroot\\\\files", folderName);
+            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files", folderName);
 
             if(!Directory.Exists(folderPath))
             {
@@ -33,7 +33,7 @@ namespace MVC_FirstProject.PL.Helpers
 
         public static void DeleteFile(string fileName, string FolderName)
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\\\files", FolderName, fileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files", FolderName, fileName);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
