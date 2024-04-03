@@ -37,6 +37,8 @@ namespace MVC_FirstProject.DAL.Models
         public EmpType EmployeeType { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public bool IsDeleted { get; set; } = false;
+
+        public string ImageName { get; set; }
         //Forgin Key
         public int? DepartmentId { get; set; }
         //Navigation

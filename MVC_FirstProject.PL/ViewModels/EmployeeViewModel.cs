@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System;
 using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Http;
 
 namespace MVC_FirstProject.PL.ViewModels
 {
@@ -57,5 +58,7 @@ namespace MVC_FirstProject.PL.ViewModels
         public int? DepartmentId { get; set; }
         //Navigation
         public Department Department { get; set; }
+        public IFormFile Image { get; set; }
+        public string ImageName { get; set; }
     }
 }

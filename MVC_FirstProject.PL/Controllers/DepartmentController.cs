@@ -7,6 +7,7 @@ using MVC_FirstProject.DAL.Models;
 using MVC_FirstProject.PL.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MVC_FirstProject.PL.Controllers
 {
@@ -25,9 +26,9 @@ namespace MVC_FirstProject.PL.Controllers
             _mapper = mapper;
             _env = env;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments = _unitOfWork.Repository<Department>().GetAll();
+            var departments = await _unitOfWork.Repository<Department>().GetAllAsync();
             var mappedDep = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
             return View(mappedDep);
         }
@@ -39,14 +40,14 @@ namespace MVC_FirstProject.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(DepartmentViewModel departmentVM)
+        public async Task<IActionResult> Create(DepartmentViewModel departmentVM)
         {
             if(ModelState.IsValid) //Server valid validation
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
                 _unitOfWork.Repository<Department>().Add(mappedDep);
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.Complete();
                 if(count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -57,11 +58,11 @@ namespace MVC_FirstProject.PL.Controllers
 
         //  /Department/Details/100
         [HttpGet]
-        public IActionResult Details(int? id, string viewName = "Details")
+        public async Task<IActionResult> Details(int? id, string viewName = "Details")
         {
             if (!id.HasValue)
                 return BadRequest(); // 400
-            var department = _unitOfWork.Repository<Department>().Get(id.Value);
+            var department = await _unitOfWork.Repository<Department>().GetAsync(id.Value);
             var mappedDep = _mapper.Map<Department, DepartmentViewModel>(department);
             if (department is null)
                 return NotFound();  // 404
@@ -71,14 +72,14 @@ namespace MVC_FirstProject.PL.Controllers
         //   /Department/Details/100
         //   /Department/Details
         [HttpGet]
-        public IActionResult Edit(int?id)
+        public async Task<IActionResult> Edit(int?id)
         {
-            return Details(id, "Edit");
+            return await Details(id, "Edit");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, DepartmentViewModel departmentVM)
         {
             if(id != departmentVM.Id)
                 return BadRequest();
@@ -89,7 +90,7 @@ namespace MVC_FirstProject.PL.Controllers
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
                 _unitOfWork.Repository<Department>().Update(mappedDep);
-                _unitOfWork.Complete();
+                await _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
@@ -107,19 +108,19 @@ namespace MVC_FirstProject.PL.Controllers
         //   /Department/Details/100
         //   /Department/Details
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
         [HttpPost]
-        public IActionResult Delete(DepartmentViewModel departmentVM)
+        public async Task<IActionResult> Delete(DepartmentViewModel departmentVM)
         {
             try
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
                 _unitOfWork.Repository<Department>().Delete(mappedDep);
-                _unitOfWork.Complete();
+                await _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
