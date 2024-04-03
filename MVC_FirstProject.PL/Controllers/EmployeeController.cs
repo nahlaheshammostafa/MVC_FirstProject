@@ -98,6 +98,8 @@ namespace MVC_FirstProject.PL.Controllers
 
             if (employee is null)
                 return NotFound();
+            if (viewName.Equals("Delete", StringComparison.OrdinalIgnoreCase))
+                TempData["ImageName"] = employee.ImageName;
             return View(viewName, mappedEmp);
         }
 
@@ -144,6 +146,7 @@ namespace MVC_FirstProject.PL.Controllers
         { 
             try
             {
+                employeeVM.ImageName = TempData["ImageName"] as string;
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Delete(mappedEmp);
                 _unitOfWork.Complete();
