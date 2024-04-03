@@ -2,12 +2,13 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace MVC_FirstProject.PL.Helpers
 {
     public static class DocumentSettings
     {
-        public static string UploadFile(IFormFile file, string folderName)
+        public static async Task<string> UploadFile(IFormFile file, string folderName)
         {
             //1. Get Located Folder Path
             //  string folderPath = $"C:\\Users\\Tarak\\OneDrive\\Documents\\Nahla_Visual\\C#\\MVC_FirstProject\\MVC_FirstProject.PL\\wwwroot\\files\\{folderName}";
@@ -27,7 +28,7 @@ namespace MVC_FirstProject.PL.Helpers
             //4. Save File As streams[Date Per Time]
             using var fileStream = new FileStream(filePath, FileMode.Create);
 
-            file.CopyTo(fileStream);
+            await file.CopyToAsync(fileStream);
             return fileName;
         }
 

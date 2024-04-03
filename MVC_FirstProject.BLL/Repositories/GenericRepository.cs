@@ -31,18 +31,18 @@ namespace MVC_FirstProject.BLL.Repositories
           //  return _dbContext.SaveChanges();
         }
 
-        public T Get(int id)
+        public async Task<T> GetAsync(int id)
         {
-            return _dbContext.Find<T>(id); //EF Core 3.1 NEW Feature
+            return await _dbContext.FindAsync<T>(id); //EF Core 3.1 NEW Feature
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             if(typeof(T) == typeof(Employee))
             {
-                return (IEnumerable<T>) _dbContext.Employees.Include(E => E.Department).AsNoTracking().ToList();
+                return (IEnumerable<T>) await _dbContext.Employees.Include(E => E.Department).AsNoTracking().ToListAsync();
             }
-            else return _dbContext.Set<T>().AsNoTracking().ToList();
+            else return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
 
         }
         public void Update(T entity)

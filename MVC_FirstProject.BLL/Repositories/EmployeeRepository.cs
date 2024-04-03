@@ -17,6 +17,9 @@ namespace MVC_FirstProject.BLL.Repositories
         {
 
         }
+
+        public override async Task<IEnumerable<Employee>> GetAllAsync()
+            => await _dbContext.Set<Employee>().Include(E=>E.Department).AsNoTracking().ToListAsync();
         public IQueryable<Employee> GetEmployeesByAddress(string address)
         {
             return _dbContext.Employees.Where(E =>E.Address.ToLower() == address.ToLower());   
