@@ -22,7 +22,6 @@ namespace MVC_FirstProject.PL.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
@@ -57,7 +56,6 @@ namespace MVC_FirstProject.PL.Controllers
 		{
 			return View();
 		}
-
 		[HttpPost]
 		public async Task<IActionResult> SignIn(SignInViewModel model)
 		{
@@ -82,6 +80,12 @@ namespace MVC_FirstProject.PL.Controllers
 				ModelState.AddModelError(string.Empty, "Invalid Login");
 			}
 			return View(model);
+		}
+
+		public async new Task<IActionResult> SignOut()
+		{
+			await _signInManager.SignOutAsync();
+			return RedirectToAction(nameof(SignIn));
 		}
 	}
 }
