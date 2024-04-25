@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace MVC_FirstProject.PL.Controllers
 {
-    public class DepartmentController : Controller
+	[Authorize]
+	public class DepartmentController : Controller
     {
       //  private readonly IDepartmentRepository _departmentRepo;
         private readonly IWebHostEnvironment _env;
