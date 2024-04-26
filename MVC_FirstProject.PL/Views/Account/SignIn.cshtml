@@ -1,0 +1,33 @@
+﻿@model SignInViewModel
+@{
+    ViewData["Title"] = "SignIn";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="main-agileinfo">
+	<div class="agileits-top">
+		<div asp-validation-summary="ModelOnly"></div>
+		<form asp-action="SignIn">
+
+			<input class="text email" asp-for="Email" placeholder="Email" required="">
+			<input class="text hamda" asp-for="Password" placeholder="Password" required="">
+			<div class="wthree-text">
+				<label class="anim">
+					<input asp-for="RememberMe" class="checkbox" >
+					<span>Remember Me?</span>
+				</label>
+				<div class="clear"> </div>
+			</div>
+			<input type="submit" value="SIGNIN">
+		</form>
+		<p>You don't Have Account? <a asp-action="SignIn"> Register Now!</a></p>
+		<p>You Forget Your Password? <a asp-action="ForgetPassword"> Forget Password!</a></p>
+	</div>
+</div>
+
+@section ValidationScriptSection
+{
+	<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+

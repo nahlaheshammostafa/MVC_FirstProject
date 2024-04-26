@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
@@ -15,7 +16,8 @@ using System.Threading.Tasks;
 
 namespace MVC_FirstProject.PL.Controllers
 {
-    public class EmployeeController : Controller
+	[Authorize]
+	public class EmployeeController : Controller
     {
        // private readonly IEmployeeRepository _employeeRepo;
         private readonly IMapper _mapper;

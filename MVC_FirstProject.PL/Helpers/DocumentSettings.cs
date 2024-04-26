@@ -19,7 +19,7 @@ namespace MVC_FirstProject.PL.Helpers
                 Directory.CreateDirectory(folderPath);
             }
 
-            //2.  Get file name ond make it unique
+            //2.  Get file name and make it unique
             string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
             //3. Get File Parth
