@@ -13,13 +13,13 @@ namespace MVC_FirstProject.PL.Services.EmailSender
 		{
 			_configuration = configuration;
 		}
-		public async Task SendAsync(string form, string recipients, string subject, string body)
+		public async Task SendAsync(string from, string recipients, string subject, string body)
 		{
 			var senderEmail = _configuration["EmailSettings:SenderEmail"];
 			var senderPassword = _configuration["EmailSettings:senderPassword"];
 
 			var emailMessage = new MailMessage();
-			emailMessage.From = new MailAddress(form);
+			emailMessage.From = new MailAddress(from);
 			emailMessage.Subject = subject;
 			emailMessage.Body = $"<html><body>{body}</body></html>";
 			emailMessage.To.Add(recipients);
